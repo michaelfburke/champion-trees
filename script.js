@@ -164,7 +164,7 @@
   const SPARKLE_CHARS = ['✦', '✧', '★', '✸', '✺', '❋', '✼', '❃', '✿', '❀'];
   const SPARKLE_COLORS = ['#ffff00', '#00ff88', '#ff00ff', '#00ccff', '#ff6600'];
   let lastSparkleTime = 0;
-  const SPARKLE_INTERVAL = 60; // ms between sparkles
+  const SPARKLE_INTERVAL = 120; // ms between sparkles
 
   document.addEventListener('mousemove', function (e) {
     const now = Date.now();
