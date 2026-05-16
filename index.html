@@ -1,175 +1,817 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Champion Trees</title>
-  <meta name="description" content="Champion Trees — A Duck's Water Off My Back out now. 2026 UK tour.">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <canvas id="starfield"></canvas>
-  <div id="ducks-container"></div>
-  <div id="sparkles-container"></div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
 
-  <div class="marquee-bar">
-    <marquee behavior="scroll" direction="left" scrollamount="5">
-      ★ A DUCK'S WATER OFF MY BACK — OUT NOW ★ BUY ON BANDCAMP ★ 2026 UK TOUR ★ LONDON · GLASGOW · LEEDS · MANCHESTER · BRIGHTON ★ CHAMPION TREES ★
-    </marquee>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+  <title>Champion Trees - Official Site</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #ee6600;
+      background-image: linear-gradient(180deg,
+          #cc2200 0%, #dd4400 6%, #ee7700 18%,
+          #ffaa00 38%, #ffdd55 56%, #99eeff 74%,
+          #44ccff 86%, #11aaee 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      font-family: 'Times New Roman', Times, serif;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* FLOATING BIRDS */
+    .floater {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .fly-r {
+      animation: goright linear infinite;
+    }
+
+    .fly-l {
+      animation: goleft linear infinite;
+    }
+
+    @keyframes goright {
+      from {
+        transform: translateX(-160px)
+      }
+
+      to {
+        transform: translateX(106vw)
+      }
+    }
+
+    @keyframes goleft {
+      from {
+        transform: translateX(106vw) scaleX(-1)
+      }
+
+      to {
+        transform: translateX(-160px) scaleX(-1)
+      }
+    }
+
+    /* TOP AQUARIUM STRIP */
+    .top-strip {
+      height: 75px;
+      background: url('cw_graphics/13 2.gif') repeat-x left center;
+      background-size: auto 75px;
+      border-bottom: 3px solid #115522;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .swim {
+      position: absolute;
+      animation: goright linear infinite;
+    }
+
+    .swim-l {
+      position: absolute;
+      animation: goleft linear infinite;
+    }
+
+    /* MARQUEE */
+    .mq {
+      background: #001100;
+      border-bottom: 2px solid #44cc22;
+      height: 21px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .mq-inner {
+      display: inline-block;
+      animation: scroll 38s linear infinite;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #ffff99;
+      padding-top: 3px;
+    }
+
+    @keyframes scroll {
+      from {
+        transform: translateX(100vw)
+      }
+
+      to {
+        transform: translateX(-100%)
+      }
+    }
+
+    .dot {
+      color: #88ff44;
+      margin: 0 10px;
+    }
+
+    /* MAIN WRAP */
+    .wrap {
+      max-width: 660px;
+      margin: 0 auto;
+      padding: 26px 16px 40px;
+      position: relative;
+    }
+
+    /* BAND NAME */
+    .band-name {
+      font-family: Impact, 'Arial Black', sans-serif;
+      font-size: clamp(38px, 8vw, 72px);
+      color: #ffff00;
+      text-shadow: 3px 3px 0 #330000, -1px -1px 0 #220000, 0 0 20px rgba(255, 255, 100, 0.4);
+      letter-spacing: 3px;
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .band-sub {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 15px;
+      color: #ffeecc;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 26px;
+    }
+
+    /* BOXES */
+    .box {
+      border: 2px solid;
+      background: rgba(0, 8, 0, 0.65);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .box-head {
+      font-family: Impact, sans-serif;
+      font-size: 14px;
+      letter-spacing: 2px;
+      padding: 5px 10px;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .box-body {
+      padding: 14px;
+    }
+
+    .box.yellow {
+      border-color: #ffff00;
+    }
+
+    .box.yellow .box-head {
+      background: #ffff00;
+    }
+
+    .box.cyan {
+      border-color: #00ffcc;
+    }
+
+    .box.cyan .box-head {
+      background: #00ffcc;
+    }
+
+    .box.orange {
+      border-color: #ff8800;
+    }
+
+    .box.orange .box-head {
+      background: #ff8800;
+    }
+
+    .box.green {
+      border-color: #44ff88;
+    }
+
+    .box.green .box-head {
+      background: #44ff88;
+    }
+
+    /* ALBUM */
+    .album-layout {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .album-art-img {
+      width: 155px;
+      height: 155px;
+      object-fit: cover;
+      border: 2px solid #ffff00;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .album-title-text {
+      font-family: Impact, sans-serif;
+      font-size: 20px;
+      color: #ffff88;
+      text-shadow: 1px 1px 0 #220000;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .album-by {
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 13px;
+      color: #ffddaa;
+      margin-bottom: 10px;
+    }
+
+    .tracklist {
+      list-style: none;
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      color: #ffeecc;
+      line-height: 1.9;
+    }
+
+    .tracklist li::before {
+      content: "\25B7  ";
+      color: #ffff66;
+    }
+
+    .listen-btn {
+      display: inline-block;
+      margin-top: 12px;
+      font-family: Impact, sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      background: #ff8800;
+      color: #000;
+      border: 2px solid #000;
+      padding: 5px 14px;
+      text-decoration: none;
+    }
+
+    .listen-btn:hover {
+      background: #ffcc00;
+    }
+
+    /* SHOWS */
+    .show-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px dashed rgba(0, 255, 120, 0.3);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .show-row:last-child {
+      border-bottom: none;
+    }
+
+    .show-date {
+      font-family: Impact, sans-serif;
+      font-size: 13px;
+      color: #ffff00;
+      letter-spacing: 1px;
+      min-width: 56px;
+      text-align: center;
+      background: rgba(255, 255, 0, 0.1);
+      border: 1px solid rgba(255, 255, 0, 0.4);
+      padding: 3px 5px;
+    }
+
+    .show-venue {
+      color: #ffffff;
+      flex: 1;
+    }
+
+    .show-city {
+      color: #aaffcc;
+      font-size: 12px;
+    }
+
+    .show-tix {
+      font-family: Impact, sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      background: #00cc55;
+      color: #000;
+      border: 1px solid #000;
+      padding: 3px 9px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .show-tix:hover {
+      background: #88ffaa;
+    }
+
+    /* ABOUT */
+    .about-text {
+      font-family: 'Times New Roman', serif;
+      font-size: 14px;
+      color: #ffeecc;
+      line-height: 1.75;
+    }
+
+    .about-text p {
+      margin-bottom: 10px;
+    }
+
+    .hl {
+      color: #ffff88;
+      font-style: italic;
+    }
+
+    .credits-block {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #aaffcc;
+      line-height: 1.8;
+      margin-top: 10px;
+      border-top: 1px dashed rgba(0, 255, 100, 0.3);
+      padding-top: 10px;
+    }
+
+    /* SOCIALS */
+    .socials-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    .soc-btn {
+      font-family: Impact, sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      padding: 7px 18px;
+      border: 2px solid;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .soc-btn:hover {
+      filter: brightness(1.2);
+    }
+
+    .soc-btn.spotify {
+      color: #1db954;
+      border-color: #1db954;
+      background: rgba(29, 185, 84, 0.1);
+    }
+
+    .soc-btn.bandcamp {
+      color: #1da0c3;
+      border-color: #1da0c3;
+      background: rgba(29, 160, 195, 0.1);
+    }
+
+    .soc-btn.insta {
+      color: #ff88cc;
+      border-color: #ff88cc;
+      background: rgba(255, 136, 204, 0.1);
+    }
+
+    .soc-btn.facebook {
+      color: #aaccff;
+      border-color: #aaccff;
+      background: rgba(102, 153, 255, 0.1);
+    }
+
+    /* MAILING LIST */
+    .mail-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mail-input {
+      flex: 1;
+      min-width: 180px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      padding: 6px 10px;
+      background: #000a00;
+      border: 2px solid #ff44cc;
+      color: #ffffff;
+      outline: none;
+    }
+
+    .mail-input::placeholder {
+      color: #aa66aa;
+    }
+
+    .mail-input:focus {
+      border-color: #ff88ee;
+    }
+
+    .mail-btn {
+      font-family: Impact, sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      background: #ff44cc;
+      color: #000;
+      border: 2px solid #000;
+      padding: 6px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .mail-btn:hover {
+      background: #ff88ee;
+    }
+
+    .mail-success {
+      display: none;
+      font-family: 'Comic Sans MS', cursive;
+      font-size: 13px;
+      color: #ff88ee;
+      margin-top: 8px;
+    }
+
+    .box.pink {
+      border-color: #ff44cc;
+    }
+
+    .box.pink .box-head {
+      background: #ff44cc;
+    }
+
+    /* VISITOR COUNTER */
+    .counter {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #ff5555;
+      border: 1px solid #ff5555;
+      padding: 4px 8px;
+      background: #110000;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .counter span {
+      display: block;
+      font-size: 20px;
+      letter-spacing: 3px;
+    }
+
+    /* DIVIDER */
+    .bird-div {
+      text-align: center;
+      margin: 6px 0 14px;
+    }
+
+    /* BOTTOM STRIP */
+    .bottom-strip {
+      background: url('cw_graphics/13 2.gif') repeat-x left center;
+      background-size: auto 70px;
+      height: 70px;
+      border-top: 3px solid #115522;
+      border-bottom: 3px solid #115522;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bottom-deco {
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 2px solid #ffaa00;
+      padding: 8px 20px;
+      position: relative;
+      overflow: hidden;
+      min-height: 65px;
+    }
+
+    /* FOOTER */
+    .foot {
+      background: rgba(0, 0, 0, 0.75);
+      border-top: 3px solid #ffff00;
+      padding: 10px 16px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      color: #665533;
+    }
+
+    @keyframes blink {
+
+      0%,
+      49% {
+        opacity: 1
+      }
+
+      50%,
+      100% {
+        opacity: 0
+      }
+    }
+
+    .blink {
+      animation: blink 1s step-end infinite;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- FLOATING BIRDS -->
+  <div class="floater fly-r" style="top:16%;animation-duration:17s;animation-delay:0s;">
+    <img src="cw_graphics/8.gif" alt="" width="67" height="74">
+  </div>
+  <div class="floater fly-l" style="top:30%;animation-duration:27s;animation-delay:-11s;">
+    <img src="cw_graphics/14.gif" alt="" width="85" height="99">
+  </div>
+  <div class="floater fly-r" style="top:52%;animation-duration:22s;animation-delay:-7s;">
+    <img src="cw_graphics/14 2.gif" alt="" width="88" height="61">
+  </div>
+  <div class="floater fly-l" style="top:70%;animation-duration:14s;animation-delay:-4s;">
+    <img src="cw_graphics/8.gif" alt="" width="48" height="53">
+  </div>
+  <div class="floater fly-r" style="top:82%;animation-duration:31s;animation-delay:-20s;">
+    <img src="cw_graphics/14.gif" alt="" width="60" height="70">
   </div>
 
-  <div class="container">
+  <!-- TOP AQUARIUM STRIP -->
+  <div class="top-strip">
+    <div class="swim" style="top:10px;animation-duration:13s;animation-delay:-2s;">
+      <img src="cw_graphics/2.png" alt="" height="36">
+    </div>
+    <div class="swim-l" style="top:18px;animation-duration:21s;animation-delay:-8s;">
+      <img src="cw_graphics/3.png" alt="" height="34">
+    </div>
+    <div class="swim" style="top:20px;animation-duration:10s;animation-delay:-5s;">
+      <img src="cw_graphics/24.png" alt="" height="40">
+    </div>
+    <div class="swim-l" style="top:8px;animation-duration:18s;animation-delay:-14s;">
+      <img src="cw_graphics/22.png" alt="" height="30">
+    </div>
+    <div class="swim" style="top:15px;animation-duration:26s;animation-delay:-18s;">
+      <img src="cw_graphics/19.gif" alt="" height="46">
+    </div>
+    <div class="swim-l" style="top:12px;animation-duration:16s;animation-delay:-3s;">
+      <img src="cw_graphics/4.png" alt="" height="32">
+    </div>
+  </div>
 
-    <header>
-      <div class="header-inner">
-        <div class="blink title-blink">✦ ✦ ✦</div>
-        <h1 class="band-name">CHAMPION TREES</h1>
-        <div class="blink title-blink">✦ ✦ ✦</div>
-        <p class="tagline">:: A DUCK'S WATER OFF MY BACK :: OUT NOW ::</p>
-        <nav class="nav-buttons">
-          <a class="retro-btn" href="#music">MUSIC</a>
-          <a class="retro-btn" href="#shows">SHOWS</a>
-          <a class="retro-btn" href="#about">ABOUT</a>
-          <a class="retro-btn" href="#contact">CONTACT</a>
-        </nav>
+  <!-- MARQUEE -->
+  <div class="mq">
+    <div class="mq-inner">
+      &#127807; CHAMPION TREES
+      <span class="dot">&middot;</span> 'A DUCK'S WATER OFF MY BACK' OUT NOW
+      <span class="dot">&middot;</span> 2026 UK TOUR: LONDON &bull; GLASGOW &bull; LEEDS &bull; MANCHESTER &bull;
+      BRIGHTON
+      <span class="dot">&middot;</span> LONDON / CAPE TOWN
+      <span class="dot">&middot;</span> SPOTIFY &middot; BANDCAMP &middot; INSTAGRAM &nbsp;&#127807;&nbsp;
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="wrap">
+
+    <!-- BAND NAME -->
+    <div style="text-align:center;margin-bottom:24px;padding-top:8px;">
+      <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:4px;">
+        <img src="cw_graphics/16.gif" alt="" width="32" height="32">
+        <img src="cw_graphics/16.gif" alt="" width="22" height="22">
+        <div class="band-name">CHAMPION TREES</div>
+        <img src="cw_graphics/16.gif" alt="" width="22" height="22">
+        <img src="cw_graphics/16.gif" alt="" width="32" height="32">
       </div>
-    </header>
+      <div class="band-sub">London &nbsp;/&nbsp; Cape Town </div>
+    </div>
 
-    <div class="divider">═══════════════════════════════════════════════════════</div>
-
-    <!-- MUSIC -->
-    <section id="music" class="section">
-      <h2 class="section-title"><span class="blink">►</span> MUSIC <span class="blink">◄</span></h2>
-
-      <div class="album-outer">
-        <p class="kicker-label">LATEST RELEASE ★ NOV 2025</p>
-        <h3 class="album-title">A DUCK'S WATER OFF MY BACK</h3>
-
-        <div class="sticker-field">
-          <a class="sticker" href="https://open.spotify.com/search/champion%20trees%20a%20duck%27s%20water%20off%20my%20back" target="_blank" rel="noopener noreferrer">SPOTIFY</a>
-          <a class="sticker" href="https://championtrees.bandcamp.com/album/a-ducks-water-off-my-back" target="_blank" rel="noopener noreferrer">BANDCAMP</a>
-          <a class="sticker" href="https://music.apple.com/us/search?term=Champion%20Trees%20A%20Duck%27s%20Water%20Off%20My%20Back" target="_blank" rel="noopener noreferrer">APPLE MUSIC</a>
-          <a class="sticker" href="https://www.youtube.com/results?search_query=Champion+Trees+A+Duck%27s+Water+Off+My+Back" target="_blank" rel="noopener noreferrer">YOUTUBE</a>
-        </div>
-
-        <div class="album-grid">
-          <figure class="album-art">
-            <img src="adwomb.avif" alt="A Duck's Water Off My Back — Champion Trees" loading="lazy" />
-          </figure>
-          <div class="liner-notes">
-            <p>Over the past three years we were willing shiners waiting, or at least we were trying to be so.
-            We were trying to lie really straight and flat and still and be like reeds for the wind to fill
-            with music. But then the wind wouldn't blow for days or we would get restless and walk around at
-            precisely the moment it started blowing again. Sometimes it was really fun. Sometimes it was like
-            collaborating on a 1000 piece puzzle of the sky via email. All of the time it felt kind of worthwhile.
-            Eventually we saw the various strands we had and we gathered them together and we called the whole
-            thing <span class="highlight">'A Duck's Water Off My Back'</span>.</p>
-
-            <div class="credits">
-              <p>Released November 20, 2025<br>
-              Mix &amp; master by André Hough<br>
-              Cover art adapted from <em>'Shape of a Duck'</em> by Jayshal Gajjar</p>
-              <p>Lyrics, vocals, guitars — Francis Christie<br>
-              Bass, backing vocals — Lex Pienaar<br>
-              Violin, synthesizers — James Bickford-Smith<br>
-              Drums — Langa Dubazana<br>
-              Saxophone — Michael Burke<br>
-              Clarinet — Michelle Hromin<br>
-              Cello — Alex Watsham</p>
-            </div>
+    <!-- ALBUM -->
+    <div class="box yellow">
+      <div class="box-head">
+        <img src="cw_graphics/13.png" alt="NEW!" width="30" height="22">
+        LATEST RELEASE
+      </div>
+      <div class="box-body">
+        <div class="album-layout">
+          <img class="album-art-img" src="adwomb.avif" alt="A Duck's Water Off My Back &mdash; Champion Trees">
+          <div style="flex:1;">
+            <div class="album-title-text">A Duck's Water Off My Back</div>
+            <div class="album-by">Champion Trees &nbsp;&middot;&nbsp; 2025</div>
+            <ul class="tracklist">
+              <li>I Wear a Shirt That Says Australia</li>
+              <li>A Duck's Water Off My Back</li>
+              <li>I Want to Sound Like a Ghost</li>
+              <li>So Says Richard</li>
+              <li>Cabbage Song</li>
+              <li>Californ-i-a</li>
+            </ul>
+            <a class="listen-btn" href="https://championtrees.bandcamp.com/album/a-ducks-water-off-my-back"
+              target="_blank">&#9654; LISTEN NOW</a>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <div class="divider">───────────────────────────────────────────────────────</div>
+    <div class="bird-div"><img src="cw_graphics/29.png" alt="" width="166" height="12"></div>
 
     <!-- SHOWS -->
-    <section id="shows" class="section">
-      <h2 class="section-title"><span class="blink">►</span> 2026 UK TOUR <span class="blink">◄</span></h2>
-      <table class="shows-table">
-        <thead>
-          <tr>
-            <th>DATE</th>
-            <th>VENUE</th>
-            <th>LOCATION</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>JUN 10</td>
-            <td>The Old Church</td>
-            <td>London (Stoke Newington)</td>
-          </tr>
-          <tr>
-            <td>AUG 07</td>
-            <td>The Old Hairdresser's</td>
-            <td>Glasgow</td>
-          </tr>
-          <tr>
-            <td>AUG 08</td>
-            <td>Headrow House</td>
-            <td>Leeds</td>
-          </tr>
-          <tr>
-            <td>AUG 09</td>
-            <td>The Peer Hat</td>
-            <td>Manchester</td>
-          </tr>
-          <tr>
-            <td>AUG 13</td>
-            <td>The Rossi Bar</td>
-            <td>Brighton</td>
-          </tr>
-          <tr>
-            <td>AUG 14</td>
-            <td>The George Tavern</td>
-            <td>London</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <div class="box cyan">
+      <div class="box-head">
+        <img src="cw_graphics/21.gif" alt="NEW" width="32" height="21">
+        2026 UK TOUR
+      </div>
+      <div class="box-body">
+        <div class="show-row">
+          <div class="show-date">10 JUN</div>
+          <div class="show-venue">The Old Church, Stoke Newington<div class="show-city">London, UK</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+        <div class="show-row">
+          <div class="show-date">07 AUG</div>
+          <div class="show-venue">The Old Hairdresser's<div class="show-city">Glasgow</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+        <div class="show-row">
+          <div class="show-date">08 AUG</div>
+          <div class="show-venue">Headrow House<div class="show-city">Leeds</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+        <div class="show-row">
+          <div class="show-date">09 AUG</div>
+          <div class="show-venue">The Peer Hat<div class="show-city">Manchester</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+        <div class="show-row">
+          <div class="show-date">13 AUG</div>
+          <div class="show-venue">The Rossi Bar<div class="show-city">Brighton</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+        <div class="show-row">
+          <div class="show-date">14 AUG</div>
+          <div class="show-venue">The George Tavern<div class="show-city">London</div>
+          </div>
+          <a class="show-tix" href="https://championtrees.bandcamp.com" target="_blank">TICKETS</a>
+        </div>
+      </div>
+    </div>
 
-    <div class="divider">───────────────────────────────────────────────────────</div>
+    <div class="bird-div"><img src="cw_graphics/29.png" alt="" width="166" height="12"></div>
 
     <!-- ABOUT -->
-    <section id="about" class="section">
-      <h2 class="section-title"><span class="blink">►</span> ABOUT THE BAND <span class="blink">◄</span></h2>
-      <div class="about-inner">
-        <p><span class="highlight">Champion Trees</span> are a band born in the wild — raw, rootsy, and reaching toward the light.
-        Like the ancient trees they're named after, their music stands tall, endures, and shelters all who listen.</p>
-        <p>Their debut album <span class="highlight">A Duck's Water Off My Back</span> is out now on all platforms.</p>
+    <div class="box orange">
+      <div class="box-head">
+        <img src="cw_graphics/9.gif" alt="" width="22" height="22">
+        ABOUT THE BAND
       </div>
-    </section>
-
-    <div class="divider">───────────────────────────────────────────────────────</div>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section">
-      <h2 class="section-title"><span class="blink">►</span> CONTACT <span class="blink">◄</span></h2>
-      <div class="contact-inner">
-        <p><a href="https://instagram.com/championtrees" target="_blank" rel="noopener noreferrer" class="retro-link">► Instagram</a></p>
-        <p><a href="https://championtrees.bandcamp.com/" target="_blank" rel="noopener noreferrer" class="retro-link">► Bandcamp</a></p>
-        <p><a href="https://championtrees.bandcamp.com/merch" target="_blank" rel="noopener noreferrer" class="retro-link">► Merch</a></p>
-        <p class="visitor-counter">You are visitor #<span id="visitor-count">00007</span> to this site!</p>
+      <div class="box-body">
+        <div class="about-text">
+          <p>Over the past three years we were willing shiners waiting, or at least we were trying to be so.
+            We were trying to lie really straight and flat and still and be like reeds for the wind to fill
+            with music. But then the wind wouldn't blow for days or we would get restless and walk around at
+            precisely the moment it started blowing again. Sometimes it was really fun. Sometimes it was like
+            collaborating on a 1000 piece puzzle of the sky via email. All of the time it felt kind of
+            worthwhile. Eventually we saw the various strands we had and we gathered them together and we
+            called the whole thing <span class="hl">'A Duck's Water Off My Back'</span>.</p>
+          <div class="credits-block">
+            Released November 20, 2025 &nbsp;&middot;&nbsp; Mix &amp; master by Andr&eacute; Hough<br>
+            Cover art adapted from <em>'Shape of a Duck'</em> by Jayshal Gajjar<br><br>
+            Lyrics, vocals, guitars &mdash; Francis Christie<br>
+            Bass, backing vocals &mdash; Lex Pienaar<br>
+            Violin, synthesizers &mdash; James Bickford-Smith<br>
+            Drums &mdash; Langa Dubazana &nbsp;&middot;&nbsp;
+            Saxophone &mdash; Michael Burke<br>
+            Clarinet &mdash; Michelle Hromin &nbsp;&middot;&nbsp;
+            Cello &mdash; Alex Watsham
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
 
-    <div class="divider">═══════════════════════════════════════════════════════</div>
+    <div class="bird-div"><img src="cw_graphics/29.png" alt="" width="166" height="12"></div>
 
-    <footer>
-      <p class="highlight">God Loveth Adverbs.</p>
-      <p>© 2026 Champion Trees · All Rights Reserved</p>
-      <p><a href="https://championtrees.bandcamp.com/" target="_blank" rel="noopener noreferrer" class="retro-link">championtrees.bandcamp.com</a></p>
-      <div class="footer-badges">
-        <span class="badge">HTML 5!</span>
-        <span class="badge">NO FRAMES!</span>
-        <span class="badge">MADE WITH ♥</span>
+    <!-- MAILING LIST -->
+    <!-- TODO: wire up form action to mailing list provider (Mailchimp / Buttondown / etc.) -->
+    <div class="box pink">
+      <div class="box-head">
+        <img src="cw_graphics/18.png" alt="" width="22" height="22">
+        MAILING LIST
       </div>
-    </footer>
+      <div class="box-body">
+        <p style="font-family:'Comic Sans MS',cursive;font-size:13px;color:#ffddff;margin-bottom:10px;">
+          Get show announcements &amp; news as e-mails.
+        </p>
+        <form class="mail-form" id="mail-form" novalidate>
+          <input class="mail-input" type="email" name="email" id="mail-email" placeholder="your@email.com" required
+            autocomplete="email">
+          <button class="mail-btn" type="submit">SIGN UP</button>
+        </form>
+        <div class="mail-success" id="mail-success">&#10003; You're on the list!</div>
+      </div>
+    </div>
+
+    <div class="bird-div"><img src="cw_graphics/29.png" alt="" width="166" height="12"></div>
+
+    <!-- FIND US -->
+    <div class="box green">
+      <div class="box-head">
+        <img src="cw_graphics/28.gif" alt="" width="22" height="22">
+        FIND US
+      </div>
+      <div class="box-body">
+        <div class="socials-row">
+          <a class="soc-btn spotify" href="https://open.spotify.com/artist/2TGA8WEasn5tdn6MZ7FWzw" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+            </svg>
+            SPOTIFY
+          </a>
+          <a class="soc-btn bandcamp" href="https://championtrees.bandcamp.com" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M0 18.75l7.437-13.5H24l-7.438 13.5z" />
+            </svg>
+            BANDCAMP
+          </a>
+          <a class="soc-btn insta" href="https://www.instagram.com/championtreesband/" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+            INSTAGRAM
+          </a>
+          <a class="soc-btn facebook" href="https://www.facebook.com/championtreesband/" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+            FACEBOOK
+          </a>
+        </div>
+      </div>
+    </div>
 
   </div>
 
-  <script src="script.js"></script>
+  <!-- BOTTOM AQUARIUM STRIP -->
+  <div class="bottom-strip">
+    <div class="swim" style="top:12px;animation-duration:15s;animation-delay:-6s;">
+      <img src="cw_graphics/5.png" alt="" height="46">
+    </div>
+    <div class="swim-l" style="top:8px;animation-duration:22s;animation-delay:-2s;">
+      <img src="cw_graphics/18.gif" alt="" height="52">
+    </div>
+    <div class="swim" style="top:20px;animation-duration:19s;animation-delay:-11s;">
+      <img src="cw_graphics/2.png" alt="" height="30">
+    </div>
+  </div>
+
+  <!-- BOTTOM DECORATION -->
+  <div class="bottom-deco">
+    <img src="cw_graphics/5.gif" alt="" height="65"
+      style="position:absolute;left:16px;bottom:0;image-rendering:pixelated;">
+    <img src="cw_graphics/25.gif" alt="" height="50" style="position:absolute;right:130px;bottom:0;">
+    <img src="cw_graphics/27.gif" alt="" height="37" style="position:absolute;right:30px;bottom:6px;">
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <span style="color:#ffff5588;font-family:Impact,sans-serif;font-size:12px;letter-spacing:1px;">CHAMPION TREES</span>
+    &nbsp;&middot;&nbsp; London / Cape Town
+    &nbsp;&middot;&nbsp; <span style="color:#553322;font-style:italic;">God Loveth Adverbs.</span>
+    <br>
+    <span style="color:#443322;font-size:10px;">best viewed at 800&times;600 in internet explorer 5.5</span>
+  </div>
+
+  <script>
+    // visitor counter
+    (function () {
+      var el = document.getElementById('cnt'), n = 4800, t = 4821;
+      function tick() {
+        if (n < t) { n++; el.textContent = String(n).padStart(6, '0'); setTimeout(tick, 120 + Math.random() * 160); }
+      }
+      tick();
+    })();
+
+    // mailing list form — TODO: replace fetch URL with your provider's endpoint
+    document.getElementById('mail-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('mail-email').value;
+      if (!email) return;
+      // TODO: POST to Mailchimp / Buttondown / Formspree / etc.
+      // fetch('https://YOUR_PROVIDER_ENDPOINT', { method:'POST', body: JSON.stringify({email}), headers:{'Content-Type':'application/json'} });
+      this.style.display = 'none';
+      document.getElementById('mail-success').style.display = 'block';
+    });
+  </script>
 </body>
+
 </html>
