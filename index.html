@@ -317,6 +317,17 @@
       background: #88ffaa;
     }
 
+    .show-sold-out {
+      font-family: Impact, sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      background: #cc0000;
+      color: #fff;
+      border: 1px solid #000;
+      padding: 3px 9px;
+      white-space: nowrap;
+    }
+
     /* ABOUT */
     .about-text {
       font-family: 'Times New Roman', serif;
@@ -519,7 +530,8 @@
         order: 1;
       }
 
-      .show-tix {
+      .show-tix,
+      .show-sold-out {
         order: 2;
       }
 
@@ -722,6 +734,7 @@
           <div class="show-date">14 AUG</div>
           <div class="show-venue">The George Tavern<div class="show-city">London</div>
           </div>
+          <span class="show-sold-out">SOLD OUT</span>
           <a class="show-tix"
             href="https://dice.fm/event/l8ddgb-champion-trees-kaspar-hauser-the-jubees-14th-aug-the-george-tavern-london-tickets"
             target="_blank">TICKETS</a>
